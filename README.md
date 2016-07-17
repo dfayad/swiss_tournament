@@ -1,4 +1,4 @@
-# swiss_tournament
+# swiss_tournament by Daniel Fayad
 
 Required Libraries and Dependencies
 
