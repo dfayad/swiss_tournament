@@ -16,10 +16,7 @@ def deleteMatches():
     DB = connect()
     cursor = DB.cursor()
     cursor.execute("DELETE FROM MATCHES;")
-
-
-#DELETE FROM table_name
-#WHERE some_column=some_value;
+    DB.commit()
 
 def deletePlayers():
     """Remove all the player records from the database."""
@@ -36,9 +33,11 @@ def countPlayers():
     cursor = DB.cursor()
     cursor.execute("SELECT * FROM PLAYERS;")
 
-    a=cursor.fetchall()
-    cursor.close()
-    return len(a)
+    #returns list of entries in table "PLAYERS"
+    e=cursor.fetchall()
+    
+    #get the len of e to get number of entries in players table
+    return len(e)
 
 
 
@@ -53,9 +52,8 @@ def registerPlayer(name):
     """
     DB = connect()
     cursor = DB.cursor()
-    cursor.execute("INSERT INTO PLAYERS (NAME, RANK, WINS, LOSSES, GAMES_PLAYED) VALUES ((%s), 0, 0, 0, 0);",(name,))
-    cursor.execute("SELECT * FROM PLAYERS")
-
+    #sql command protected against sql injection
+    cursor.execute("INSERT INTO PLAYERS (NAME, WINS, LOSSES, GAMES_PLAYED) VALUES ((%s), 0, 0, 0);",(name,))
     DB.commit()
 
 def playerStandings():
@@ -88,9 +86,9 @@ def reportMatch(winner, loser):
     """
 
     DB = connect()
-    cursor = DB.cursor()
-    cursor2 = DB.cursor()
-    cursor3 = DB.cursor()
+    cursor = DB.cursor() #to update both winners and losers
+    cursor2 = DB.cursor() #to get games played by winner
+    cursor3 = DB.cursor() #to get games played by loser
 
     winner = str(winner)
     loser = str(loser)
@@ -112,7 +110,7 @@ def reportMatch(winner, loser):
 
     if (a==b):
         num=a[0][0]
-    elif(a[0][0]<b[0][0]):#choose the one with greatest number of games, one may have skipped a round
+    elif(a[0][0]<b[0][0]):#choose greater, one may have skipped a round
         num=b[0][0]
     else:
         num=a[0][0]
@@ -121,7 +119,8 @@ def reportMatch(winner, loser):
 
     
     #ADD TO TABLE OF MATCHES
-    cursor.execute("INSERT INTO MATCHES (WINNER, LOSER, ROUND) VALUES ("+winner+", "+loser+", "+num+")")
+    cursor.execute(
+        "INSERT INTO MATCHES (WINNER, LOSER, ROUND) VALUES ("+winner+", "+loser+", "+num+")")
  
     DB.commit()
  
@@ -147,7 +146,7 @@ def swissPairings():
 
     s = playerStandings()
 
-    #empty array
+    #empty array representing the list of match pairings for next round
     pairings = []
 
     #number of pairings
@@ -156,12 +155,13 @@ def swissPairings():
 
     k=0 #counter
 
-    #itterate through each of the touples
+    #iterate through each of the touples
     while (k<=n):
+        #s is ordered by wins
+        #player plays next match with next person on the list
         pair = [s[k][0],s[k][1], s[k+1][0],s[k+1][1]]
         pairings.append(pair)
-        #SET READY COLUMN BACK TO ZERO FOR ALL
-        k=k+2
+        k=k+2 #add 2 because one pair has alrady been formed
 
     return pairings
 
