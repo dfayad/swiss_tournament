@@ -22,8 +22,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     DB = connect()
     cursor = DB.cursor()
-    cursor.execute("DELETE FROM MATCHES")
-    cursor.execute("DELETE FROM PLAYERS")
+    cursor.execute("TRUNCATE PLAYERS CASCADE;")
     DB.commit()
 
 
@@ -53,7 +52,10 @@ def registerPlayer(name):
     DB = connect()
     cursor = DB.cursor()
     #sql command protected against sql injection
-    cursor.execute("INSERT INTO PLAYERS (NAME, WINS, LOSSES, GAMES_PLAYED) VALUES ((%s), 0, 0, 0);",(name,))
+    query = "INSERT INTO PLAYERS (NAME, WINS, LOSSES, GAMES_PLAYED VALUES ((s%),0,0,0);"
+    param = (name,)
+
+    cursor.execute(query, param)
     DB.commit()
 
 def playerStandings():
@@ -119,8 +121,10 @@ def reportMatch(winner, loser):
 
     
     #ADD TO TABLE OF MATCHES
-    cursor.execute(
-        "INSERT INTO MATCHES (WINNER, LOSER, ROUND) VALUES ("+winner+", "+loser+", "+num+")")
+    query = "INSERT INTO MATCHES (WINNER, LOSER, ROUND) VALUES (%s ,%s ,%s);"
+    data = (winner,loser,num)
+
+    cursor.execute(query, data)
  
     DB.commit()
  

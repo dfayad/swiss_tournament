@@ -6,9 +6,14 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+--check if database already exists
+DROP DATABASE IF EXISTS tournament;
 
 --create db
 CREATE DATABASE tournament;
+
+--connect to db tournament
+\c tournament
 
 -- A TABLE THAT HAS THE PLAYERS' INFORMATION
 CREATE TABLE PLAYERS
@@ -20,13 +25,13 @@ PLAYER_ID SERIAL PRIMARY KEY, --primary key
 NAME TEXT, --name of players
 
 --Number of wins
-WINS INT,
+--WINS INT,
 
 --Number of losses
-LOSSES INT,
+--LOSSES INT,
 
 --Number of games played
-GAMES_PLAYED INT
+--GAMES_PLAYED INT
 
 );
 
@@ -43,3 +48,9 @@ LOSER INT REFERENCES PLAYERS(PLAYER_ID), --WINNER OF MATCH
 ROUND INT --ROUND THAT THE MATCH TOOK PLACE IN
 
 );
+
+CREATE VIEW PLAYER_WINS AS 
+SELECT WINNER AS PLAYER_ID, COUNT(*) AS WINS 
+FROM MATCHES 
+GROUP BY PLAYER_ID 
+ORDER BY WINS;

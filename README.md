@@ -1,5 +1,9 @@
 swiss_tournament by Daniel Fayad
 
+What is it?
+
+    This project allows you to create swiss tournaments, keep track of the matches and players.
+
 Required Libraries and Dependencies
 
     Requires: 
@@ -10,9 +14,17 @@ How to Run Project
 
     1.- To run the project you can download the zip file or clone it.
     2.- expand it / go to the directory it is saved on.
-    3.- create the database structure described in tournament.sql in PostgreSQL
+    3.- create the database structure described in tournament.sql in PostgreSQL**
     4.- create your client program with the players and matches you want to add, don't forget to import tournament.py and use he fucntions described below
     5.- run your client program and have fun
+
+    ** (For example, if you're runnng the program in Vagrant VM:
+    get to the directory you have vagrant in, use the "vagrant up" command,
+    use the "vagrant ssh" command, go to the directory you cloned this project 
+    on, type "psql" to access PosgreSQL, then you can import the  database file
+    with the command: "\i tournament.sql" after that, you should have your 
+    database set up, and you'll be able to continue.)
+
 
 Files
 
