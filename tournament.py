@@ -52,9 +52,11 @@ def registerPlayer(name):
     DB = connect()
     cursor = DB.cursor()
     
+    #Add entry to PLAYERS table
     query = "INSERT INTO PLAYERS (NAME) VALUES (%s)"
     param = (name,)
 
+    #protect agains SQL injection
     cursor.execute(query, param)
     
     DB.commit()
@@ -98,9 +100,9 @@ def playerStandings():
         
         cursor.execute("SELECT * FROM STANDINGS")
 
-        b = cursor.fetchall()
+        standings = cursor.fetchall()
 
-        return b    
+        return standings    
 
 
 
@@ -113,18 +115,16 @@ def reportMatch(winner, loser):
     """
 
     DB = connect()
-    cursor = DB.cursor() #to update both winners and losers
-    
-    #cursor2 = DB.cursor() #to get games played by winner
-    #cursor3 = DB.cursor() #to get games played by loser
+    cursor = DB.cursor()
 
     winner = str(winner)
     loser = str(loser)
 
-    #ADD TO TABLE OF MATCHES
+    #Add new entry to MATCHES table
     query = "INSERT INTO MATCHES (WINNER, LOSER) VALUES (%s ,%s);"
     data = (winner,loser)
 
+    #protect against SQL injection
     cursor.execute(query, data)
  
     DB.commit()
@@ -149,14 +149,12 @@ def swissPairings():
 
     s = playerStandings()
     sstr = str(s)
-    print ("standings: "+sstr)
 
     #empty array representing the list of match pairings for next round
     pairings = []
 
     #number of pairings
     n = countPlayers()
-
 
     k=0 #counter
 
@@ -168,5 +166,4 @@ def swissPairings():
         pairings.append(pair)
         k=k+2 #add 2 because one pair has alrady been formed
 
-    print pairings
     return pairings
