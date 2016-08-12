@@ -17,7 +17,7 @@ How to Run Project
     2.- expand it / go to the directory it is saved on.
     3.- create the database structure described in tournament.sql in PostgreSQL**
     4.- create your client program with the players and matches you want to add, don't forget to import tournament.py and use he fucntions described below
-    5.- run your client program and have fun
+    5.- run your client program (an example can be seen in tournament_test.py) and have fun
 
     * Here's a resource explaining how to download and use it: https://www.udacity.com/wiki/ud197/install-vagrant
     
@@ -31,23 +31,26 @@ How to Run Project
 
 Files
 
-    tournament.sql SQL for database used, it contains a database named "tournament"
+    --------------
+    tournament.sql
+    --------------
+    SQL for database used, it contains a database named "tournament"
     
     Database contains two tables: PLAYERS, MATCHES
     
     Table PLAYERS contains columns:
         -PLAYER_ID: unique player ID, primary key of this table.
         -NAME: name of player, doesn't have to be unique.
-        -WINS: number of wins of this player.
-        -LOSSES: number of losses of this player.
-        -GAMES_PLAYED: number of games played by this player.
     
     Table MATCHES contains columns:
         -MATCH_ID: unique match ID, primary key of this table.
         -WINNER: unique player ID of winner of this unique match, it references PLAYER_ID from table PLAYERS.
         -LOSER: unique player ID of loser of this unique match, it references PLAYER_ID from table PLAYERS.
-        -ROUND: round the match took place in.
-    tournament.py Python script with functions in order to implement a swiss tournament
+
+    -------------
+    tournament.py
+    -------------
+    Python script with functions in order to implement a swiss tournament
     
     Functions included are:
     
@@ -102,3 +105,12 @@ Files
             name1: the first player's name
             id2: the second player's unique id
             name2: the second player's name
+
+    ------------------
+    tournament_test.py
+    ------------------
+
+    This file was used for testing the functionality of the project (both python and sql files).
+
+    You can use this as an example on how to creat your own client program to run your own swiss tournament!
+
