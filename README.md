@@ -11,13 +11,16 @@ Required Libraries and Dependencies
     -PostgreSQL installed
     
 How to Run Project
-
+    
+    (0.- First you might need to install Vagrant* and VM)
     1.- To run the project you can download the zip file or clone it.
     2.- expand it / go to the directory it is saved on.
     3.- create the database structure described in tournament.sql in PostgreSQL**
     4.- create your client program with the players and matches you want to add, don't forget to import tournament.py and use he fucntions described below
     5.- run your client program and have fun
 
+    * Here's a resource explaining how to download and use it: https://www.udacity.com/wiki/ud197/install-vagrant
+    
     ** (For example, if you're runnng the program in Vagrant VM:
     get to the directory you have vagrant in, use the "vagrant up" command,
     use the "vagrant ssh" command, go to the directory you cloned this project 

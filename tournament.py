@@ -51,11 +51,12 @@ def registerPlayer(name):
     """
     DB = connect()
     cursor = DB.cursor()
-    #sql command protected against sql injection
-    query = "INSERT INTO PLAYERS (NAME, WINS, LOSSES, GAMES_PLAYED VALUES ((s%),0,0,0);"
+    
+    query = "INSERT INTO PLAYERS (NAME) VALUES (%s)"
     param = (name,)
 
     cursor.execute(query, param)
+    
     DB.commit()
 
 def playerStandings():
@@ -74,8 +75,32 @@ def playerStandings():
 
     DB = connect()
     cursor = DB.cursor()
-    cursor.execute("SELECT PLAYER_ID, NAME, WINS, GAMES_PLAYED FROM PLAYERS ORDER BY WINS")
-    return (cursor.fetchall())
+
+    cursor.execute("SELECT * FROM MATCHES")
+
+    a = cursor.fetchall()
+
+    L=[] #empty list
+
+    if (len(a)==0):
+        #NO GAMES YET
+        cursor.execute("SELECT * FROM PLAYERS;")
+        b=cursor.fetchall()
+        for i in range(len(b)):
+            row = b[i]
+            row=row+(0,0)
+
+            L.append(row)
+
+        return L
+    
+    else:
+        
+        cursor.execute("SELECT * FROM STANDINGS")
+
+        b = cursor.fetchall()
+
+        return b    
 
 
 
@@ -89,44 +114,21 @@ def reportMatch(winner, loser):
 
     DB = connect()
     cursor = DB.cursor() #to update both winners and losers
-    cursor2 = DB.cursor() #to get games played by winner
-    cursor3 = DB.cursor() #to get games played by loser
+    
+    #cursor2 = DB.cursor() #to get games played by winner
+    #cursor3 = DB.cursor() #to get games played by loser
 
     winner = str(winner)
     loser = str(loser)
 
-    #UPDATE WINNER
-    cursor.execute("UPDATE PLAYERS SET WINS=WINS+1 WHERE PLAYER_ID=(%s)",(winner,))
-    cursor.execute("UPDATE PLAYERS SET GAMES_PLAYED=GAMES_PLAYED+1 WHERE PLAYER_ID=(%s)",(winner,))
-
-
-    #UPDATE LOSER
-    cursor.execute("UPDATE PLAYERS SET LOSSES=LOSSES+1 WHERE PLAYER_ID=(%s)",(loser,))
-    cursor.execute("UPDATE PLAYERS SET GAMES_PLAYED=GAMES_PLAYED+1 WHERE PLAYER_ID=(%s)",(loser,))
-
-    cursor2.execute("SELECT GAMES_PLAYED FROM PLAYERS WHERE PLAYER_ID=(%s)",(winner,))
-    a = cursor2.fetchall()
-
-    cursor3.execute("SELECT GAMES_PLAYED FROM PLAYERS WHERE PLAYER_ID=(%s)",(loser,))
-    b = cursor3.fetchall()
-
-    if (a==b):
-        num=a[0][0]
-    elif(a[0][0]<b[0][0]):#choose greater, one may have skipped a round
-        num=b[0][0]
-    else:
-        num=a[0][0]
-
-    num = str(num)
-
-    
     #ADD TO TABLE OF MATCHES
-    query = "INSERT INTO MATCHES (WINNER, LOSER, ROUND) VALUES (%s ,%s ,%s);"
-    data = (winner,loser,num)
+    query = "INSERT INTO MATCHES (WINNER, LOSER) VALUES (%s ,%s);"
+    data = (winner,loser)
 
     cursor.execute(query, data)
  
     DB.commit()
+
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -144,33 +146,27 @@ def swissPairings():
         name2: the second player's name
     """
     
-    #ONLY DO IF READY COLUMN IS "1" FOR ALL ENTRIES
-
-
 
     s = playerStandings()
+    sstr = str(s)
+    print ("standings: "+sstr)
 
     #empty array representing the list of match pairings for next round
     pairings = []
 
     #number of pairings
-    n = countPlayers()/2
+    n = countPlayers()
 
 
     k=0 #counter
 
     #iterate through each of the touples
-    while (k<=n):
+    while (k<n-1):
         #s is ordered by wins
         #player plays next match with next person on the list
         pair = [s[k][0],s[k][1], s[k+1][0],s[k+1][1]]
         pairings.append(pair)
         k=k+2 #add 2 because one pair has alrady been formed
 
+    print pairings
     return pairings
-
-
-
-
-
-

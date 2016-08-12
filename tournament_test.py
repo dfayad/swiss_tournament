@@ -47,7 +47,6 @@ def testRegisterCountDelete():
     registerPlayer("Atlanta Hope")
     c = countPlayers()
     if c != 4:
-        print c
         raise ValueError(
             "After registering four players, countPlayers should be 4.")
     deletePlayers()
